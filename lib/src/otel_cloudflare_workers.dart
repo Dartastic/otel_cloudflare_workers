@@ -2,7 +2,6 @@
 // Copyright 2025-2026 Mindful Software LLC d/b/a Dartastic.io, All rights reserved.
 
 import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
-import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 
 import 'otel_cloudflare_workers_suppression.dart';
 
@@ -98,120 +97,168 @@ Future<T> tracedCloudflareWorkers<T>({
   final span =
       t.startSpan('cloudflare_workers $operation', kind: SpanKind.client);
   try {
-    span.setStringAttribute('rpc.system', 'cloudflare_workers');
-    span.setStringAttribute('rpc.method', operation);
+    span.addAttributes(OTel.attributes(
+        [OTel.attributeString('rpc.system', 'cloudflare_workers')]));
+    span.addAttributes(
+        OTel.attributes([OTel.attributeString('rpc.method', operation)]));
     final r = await invoke();
     final res = r.result;
     if (res != null) {
       if (res.account != null) {
-        span.setStringAttribute('cloudflare.account', res.account!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.account', res.account!)]));
       }
       if (res.scriptName != null) {
-        span.setStringAttribute('cloudflare.script.name', res.scriptName!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.script.name', res.scriptName!)]));
       }
       if (res.scriptId != null) {
-        span.setStringAttribute('cloudflare.script.id', res.scriptId!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.script.id', res.scriptId!)]));
       }
       if (res.workerNamespace != null) {
-        span.setStringAttribute(
-            'cloudflare.worker.namespace', res.workerNamespace!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString(
+              'cloudflare.worker.namespace', res.workerNamespace!)
+        ]));
       }
       if (res.workerEnvironment != null) {
-        span.setStringAttribute(
-            'cloudflare.worker.environment', res.workerEnvironment!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString(
+              'cloudflare.worker.environment', res.workerEnvironment!)
+        ]));
       }
       if (res.triggerType != null) {
-        span.setStringAttribute('cloudflare.trigger.type', res.triggerType!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString('cloudflare.trigger.type', res.triggerType!)
+        ]));
       }
       if (res.triggerRoute != null) {
-        span.setStringAttribute('cloudflare.trigger.route', res.triggerRoute!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString('cloudflare.trigger.route', res.triggerRoute!)
+        ]));
       }
       if (res.colo != null) {
-        span.setStringAttribute('cloudflare.colo', res.colo!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.colo', res.colo!)]));
       }
       if (res.runtime != null) {
-        span.setStringAttribute('cloudflare.runtime', res.runtime!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.runtime', res.runtime!)]));
       }
       if (res.compatibilityDate != null) {
-        span.setStringAttribute(
-            'cloudflare.compatibility_date', res.compatibilityDate!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString(
+              'cloudflare.compatibility_date', res.compatibilityDate!)
+        ]));
       }
       if (res.cpuTimeMs != null) {
-        span.setIntAttribute('cloudflare.cpu_time_ms', res.cpuTimeMs!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('cloudflare.cpu_time_ms', res.cpuTimeMs!)]));
       }
       if (res.wallTimeMs != null) {
-        span.setIntAttribute('cloudflare.wall_time_ms', res.wallTimeMs!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('cloudflare.wall_time_ms', res.wallTimeMs!)]));
       }
       if (res.memoryMb != null) {
-        span.setIntAttribute('cloudflare.memory_mb', res.memoryMb!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('cloudflare.memory_mb', res.memoryMb!)]));
       }
       if (res.subrequests != null) {
-        span.setIntAttribute('cloudflare.subrequests', res.subrequests!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('cloudflare.subrequests', res.subrequests!)]));
       }
       if (res.kvNamespaceId != null) {
-        span.setStringAttribute(
-            'cloudflare.kv.namespace_id', res.kvNamespaceId!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString('cloudflare.kv.namespace_id', res.kvNamespaceId!)
+        ]));
       }
       if (res.kvKey != null) {
-        span.setStringAttribute('cloudflare.kv.key', res.kvKey!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.kv.key', res.kvKey!)]));
       }
       if (res.kvReadCount != null) {
-        span.setIntAttribute('cloudflare.kv.read_count', res.kvReadCount!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('cloudflare.kv.read_count', res.kvReadCount!)]));
       }
       if (res.kvWriteCount != null) {
-        span.setIntAttribute('cloudflare.kv.write_count', res.kvWriteCount!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeInt('cloudflare.kv.write_count', res.kvWriteCount!)
+        ]));
       }
       if (res.r2BucketName != null) {
-        span.setStringAttribute('cloudflare.r2.bucket', res.r2BucketName!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.r2.bucket', res.r2BucketName!)]));
       }
       if (res.r2ObjectKey != null) {
-        span.setStringAttribute('cloudflare.r2.object_key', res.r2ObjectKey!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString('cloudflare.r2.object_key', res.r2ObjectKey!)
+        ]));
       }
       if (res.r2OperationsClassA != null) {
-        span.setIntAttribute(
-            'cloudflare.r2.operations.class_a', res.r2OperationsClassA!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeInt(
+              'cloudflare.r2.operations.class_a', res.r2OperationsClassA!)
+        ]));
       }
       if (res.r2OperationsClassB != null) {
-        span.setIntAttribute(
-            'cloudflare.r2.operations.class_b', res.r2OperationsClassB!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeInt(
+              'cloudflare.r2.operations.class_b', res.r2OperationsClassB!)
+        ]));
       }
       if (res.queueName != null) {
-        span.setStringAttribute('cloudflare.queue.name', res.queueName!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.queue.name', res.queueName!)]));
       }
       if (res.queueMessageCount != null) {
-        span.setIntAttribute(
-            'cloudflare.queue.message_count', res.queueMessageCount!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeInt(
+              'cloudflare.queue.message_count', res.queueMessageCount!)
+        ]));
       }
       if (res.queueRetries != null) {
-        span.setIntAttribute('cloudflare.queue.retries', res.queueRetries!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeInt('cloudflare.queue.retries', res.queueRetries!)
+        ]));
       }
       if (res.durableObjectNamespace != null) {
-        span.setStringAttribute(
-            'cloudflare.do.namespace', res.durableObjectNamespace!);
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString(
+              'cloudflare.do.namespace', res.durableObjectNamespace!)
+        ]));
       }
       if (res.durableObjectId != null) {
-        span.setStringAttribute('cloudflare.do.id', res.durableObjectId!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.do.id', res.durableObjectId!)]));
       }
       if (res.aiModel != null) {
-        span.setStringAttribute('cloudflare.ai.model', res.aiModel!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.ai.model', res.aiModel!)]));
       }
       if (res.aiTokensIn != null) {
-        span.setIntAttribute('cloudflare.ai.tokens.in', res.aiTokensIn!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('cloudflare.ai.tokens.in', res.aiTokensIn!)]));
       }
       if (res.aiTokensOut != null) {
-        span.setIntAttribute('cloudflare.ai.tokens.out', res.aiTokensOut!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('cloudflare.ai.tokens.out', res.aiTokensOut!)]));
       }
       if (res.statusCode != null) {
-        span.setIntAttribute('http.response.status_code', res.statusCode!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeInt('http.response.status_code', res.statusCode!)]));
       }
       if (res.errorCode != null) {
-        span.setStringAttribute('cloudflare.error.code', res.errorCode!);
+        span.addAttributes(OTel.attributes(
+            [OTel.attributeString('cloudflare.error.code', res.errorCode!)]));
       }
       final fail = res.errorCode != null ||
           (res.statusCode != null && res.statusCode! >= 400);
       if (fail) {
-        span.setStringAttribute(ErrorResource.errorType.key,
-            res.errorCode ?? 'cloudflare_workers.error');
+        span.addAttributes(OTel.attributes([
+          OTel.attributeString(ErrorResource.errorType.key,
+              res.errorCode ?? 'cloudflare_workers.error')
+        ]));
         span.setStatus(SpanStatusCode.Error, res.errorMessage);
       }
     }
