@@ -1,11 +1,12 @@
-// Licensed under the Dartastic Pro Software License Agreement.
+// Licensed under the Apache License, Version 2.0
 // Copyright 2025-2026 Mindful Software LLC d/b/a Dartastic.io, All rights reserved.
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 
 import 'otel_cloudflare_workers_suppression.dart';
 
 class CloudflareWorkersResult {
+  /// Creates a result.
   const CloudflareWorkersResult({
     this.account,
     this.scriptName,
@@ -77,8 +78,13 @@ class CloudflareWorkersResult {
   final String? errorMessage;
 }
 
+/// What a traced call returned: the value for the caller plus fields
+/// recorded on the span.
 class CloudflareWorkersCallResult<T> {
+  /// Creates a call result.
   const CloudflareWorkersCallResult({required this.value, this.result});
+
+  /// The value returned to the caller.
   final T value;
   final CloudflareWorkersResult? result;
 }
@@ -86,177 +92,189 @@ class CloudflareWorkersCallResult<T> {
 Future<T> tracedCloudflareWorkers<T>({
   required String operation,
   required Future<CloudflareWorkersCallResult<T>> Function() invoke,
-  Tracer? tracer,
+  APITracer? tracer,
 }) async {
   if (cloudflareWorkersInstrumentationSuppressed()) {
     final r = await invoke();
     return r.value;
   }
   final t =
-      tracer ?? OTel.tracerProvider().getTracer('otel_cloudflare_workers');
+      tracer ?? OTelAPI.tracerProvider().getTracer('otel_cloudflare_workers');
   final span =
       t.startSpan('cloudflare_workers $operation', kind: SpanKind.client);
   try {
-    span.addAttributes(OTel.attributes(
-        [OTel.attributeString('rpc.system', 'cloudflare_workers')]));
+    span.addAttributes(OTelAPI.attributes(
+        [OTelAPI.attributeString('rpc.system', 'cloudflare_workers')]));
     span.addAttributes(
-        OTel.attributes([OTel.attributeString('rpc.method', operation)]));
+        OTelAPI.attributes([OTelAPI.attributeString('rpc.method', operation)]));
     final r = await invoke();
     final res = r.result;
     if (res != null) {
       if (res.account != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.account', res.account!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeString('cloudflare.account', res.account!)]));
       }
       if (res.scriptName != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.script.name', res.scriptName!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.script.name', res.scriptName!)
+        ]));
       }
       if (res.scriptId != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.script.id', res.scriptId!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeString('cloudflare.script.id', res.scriptId!)]));
       }
       if (res.workerNamespace != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString(
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString(
               'cloudflare.worker.namespace', res.workerNamespace!)
         ]));
       }
       if (res.workerEnvironment != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString(
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString(
               'cloudflare.worker.environment', res.workerEnvironment!)
         ]));
       }
       if (res.triggerType != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString('cloudflare.trigger.type', res.triggerType!)
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.trigger.type', res.triggerType!)
         ]));
       }
       if (res.triggerRoute != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString('cloudflare.trigger.route', res.triggerRoute!)
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.trigger.route', res.triggerRoute!)
         ]));
       }
       if (res.colo != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.colo', res.colo!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeString('cloudflare.colo', res.colo!)]));
       }
       if (res.runtime != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.runtime', res.runtime!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeString('cloudflare.runtime', res.runtime!)]));
       }
       if (res.compatibilityDate != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString(
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString(
               'cloudflare.compatibility_date', res.compatibilityDate!)
         ]));
       }
       if (res.cpuTimeMs != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('cloudflare.cpu_time_ms', res.cpuTimeMs!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeInt('cloudflare.cpu_time_ms', res.cpuTimeMs!)]));
       }
       if (res.wallTimeMs != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('cloudflare.wall_time_ms', res.wallTimeMs!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('cloudflare.wall_time_ms', res.wallTimeMs!)
+        ]));
       }
       if (res.memoryMb != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('cloudflare.memory_mb', res.memoryMb!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeInt('cloudflare.memory_mb', res.memoryMb!)]));
       }
       if (res.subrequests != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('cloudflare.subrequests', res.subrequests!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('cloudflare.subrequests', res.subrequests!)
+        ]));
       }
       if (res.kvNamespaceId != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString('cloudflare.kv.namespace_id', res.kvNamespaceId!)
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString(
+              'cloudflare.kv.namespace_id', res.kvNamespaceId!)
         ]));
       }
       if (res.kvKey != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.kv.key', res.kvKey!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeString('cloudflare.kv.key', res.kvKey!)]));
       }
       if (res.kvReadCount != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('cloudflare.kv.read_count', res.kvReadCount!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('cloudflare.kv.read_count', res.kvReadCount!)
+        ]));
       }
       if (res.kvWriteCount != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeInt('cloudflare.kv.write_count', res.kvWriteCount!)
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('cloudflare.kv.write_count', res.kvWriteCount!)
         ]));
       }
       if (res.r2BucketName != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.r2.bucket', res.r2BucketName!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.r2.bucket', res.r2BucketName!)
+        ]));
       }
       if (res.r2ObjectKey != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString('cloudflare.r2.object_key', res.r2ObjectKey!)
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.r2.object_key', res.r2ObjectKey!)
         ]));
       }
       if (res.r2OperationsClassA != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeInt(
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt(
               'cloudflare.r2.operations.class_a', res.r2OperationsClassA!)
         ]));
       }
       if (res.r2OperationsClassB != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeInt(
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt(
               'cloudflare.r2.operations.class_b', res.r2OperationsClassB!)
         ]));
       }
       if (res.queueName != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.queue.name', res.queueName!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.queue.name', res.queueName!)
+        ]));
       }
       if (res.queueMessageCount != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeInt(
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt(
               'cloudflare.queue.message_count', res.queueMessageCount!)
         ]));
       }
       if (res.queueRetries != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeInt('cloudflare.queue.retries', res.queueRetries!)
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('cloudflare.queue.retries', res.queueRetries!)
         ]));
       }
       if (res.durableObjectNamespace != null) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString(
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString(
               'cloudflare.do.namespace', res.durableObjectNamespace!)
         ]));
       }
       if (res.durableObjectId != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.do.id', res.durableObjectId!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.do.id', res.durableObjectId!)
+        ]));
       }
       if (res.aiModel != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.ai.model', res.aiModel!)]));
+        span.addAttributes(OTelAPI.attributes(
+            [OTelAPI.attributeString('cloudflare.ai.model', res.aiModel!)]));
       }
       if (res.aiTokensIn != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('cloudflare.ai.tokens.in', res.aiTokensIn!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('cloudflare.ai.tokens.in', res.aiTokensIn!)
+        ]));
       }
       if (res.aiTokensOut != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('cloudflare.ai.tokens.out', res.aiTokensOut!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('cloudflare.ai.tokens.out', res.aiTokensOut!)
+        ]));
       }
       if (res.statusCode != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeInt('http.response.status_code', res.statusCode!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeInt('http.response.status_code', res.statusCode!)
+        ]));
       }
       if (res.errorCode != null) {
-        span.addAttributes(OTel.attributes(
-            [OTel.attributeString('cloudflare.error.code', res.errorCode!)]));
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString('cloudflare.error.code', res.errorCode!)
+        ]));
       }
       final fail = res.errorCode != null ||
           (res.statusCode != null && res.statusCode! >= 400);
       if (fail) {
-        span.addAttributes(OTel.attributes([
-          OTel.attributeString(ErrorResource.errorType.key,
+        span.addAttributes(OTelAPI.attributes([
+          OTelAPI.attributeString(ErrorAttributes.errorType.key,
               res.errorCode ?? 'cloudflare_workers.error')
         ]));
         span.setStatus(SpanStatusCode.Error, res.errorMessage);
